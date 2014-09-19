@@ -8,7 +8,6 @@
 # International Talk Like a Pirate Day is Today, Sept. 19 =)
 # http://www.talklikeapirate.com/
 
-
 # Load Packages -----------------------------------------------------------
 require(gvlma) #Screw library(), require() rules
 require(MASS)
@@ -29,13 +28,15 @@ mod <- lm(pirate ~ available_digital + streaming + rental + purchase + dvd +
             vudu_purchase + amazon_dvd + amazon_bluray + netflix_dvd +
             redbox,data = piracy)
 summary.lm(mod)
+gvlma(mod)
 
 # Arrr! Seems that we have a singularity in the Ordinary Least Squares regression 
 #   above with all these predictors, matee! Well blow me down! Best we scrape
 #   the barnicals off our rudder, statistically speaking:
 
-mod <- lm(rank ~ available_digital + week,data = piracy)
-summary.lm(mod)
-step <- stepAIC(mod, direction = "forward")
+step <- stepAIC(mod, direction = "both")
+step$anova
 
-gvlma(mod)
+# Fully Stepwise Model:
+mod <- lm(pirate ~ vudu_rental + youtube_rental + amazon_video_purchase + 
+             vudu_purchase, data = piracy)
