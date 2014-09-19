@@ -12,7 +12,6 @@
 require(gvlma) #Screw library(), require() rules
 require(MASS)
 
-
 # Source Pirate Functions -------------------------------------------------
 source("pirate_functions.R")
 
@@ -39,7 +38,7 @@ gvlma(mod)
 #   above with all these predictors, matee! Well blow me down! 
 
 # There was no identifying variation in some of the explanatory variables!
-# This means many of these highly pirated movies have absolutely NO avaialability
+# This means many of these highly pirated movies have absolutely NO availability
 #  in many of these channels, for example:
 mean(piracy$netflix_instant)
 mean(piracy$amazon_prime_instant_video)
