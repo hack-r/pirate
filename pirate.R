@@ -81,3 +81,8 @@ mfxboot(modform = "higher_piracy ~ amazon_video_purchase + redbox + amazon_dvd "
         dist = "probit",
         data = piracy)
 
+# The final results are only directional because this is a tiny sample,
+#   but they indicate a 6.3% decrease in probability of being a movie with
+#   high piracy if the digital movie is available on Amazon for purchase and a 
+#   decline of 3.7% in probability of higher piracy if the movie is available as
+#   a DVD
