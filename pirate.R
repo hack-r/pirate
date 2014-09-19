@@ -17,6 +17,7 @@ require(MASS)
 source("pirate_functions.R")
 
 # Grab data on pirates ----------------------------------------------------
+# Top 10 Pirated Movies by week and their legal availability across forms of media
 download.file("http://piracydata.org/csv", destfile = "p.csv")
 piracy <- read.csv("p.csv")
 
@@ -35,8 +36,22 @@ summary.lm(mod)
 gvlma(mod)
 
 # Arrr! Seems that we have a singularity in the Ordinary Least Squares regression 
-#   above with all these predictors, matee! Well blow me down! Best we scrape
-#   the barnicals off our rudder, statistically speaking:
+#   above with all these predictors, matee! Well blow me down! 
+
+# There was no identifying variation in some of the explanatory variables!
+# This means many of these highly pirated movies have absolutely NO avaialability
+#  in many of these channels, for example:
+mean(piracy$netflix_instant)
+mean(piracy$amazon_prime_instant_video)
+mean(piracy$youtube_free)
+mean(piracy$epix)
+mean(piracy$crackle)
+mean(piracy$streampix)
+mean(piracy$hulu_movies)
+
+# This provides evidence that unavailability is associated with piracy, however
+#   we need non-zero datapoints to use these variables in a regression! 
+# Best we scrape the barnicals off our rudder, statistically speaking:
 
 step <- stepAIC(mod, direction = "both")
 step$anova
@@ -58,5 +73,11 @@ piracy$higher_piracy <- 0
 piracy$higher_piracy[piracy$pirate >= .5] <- 1
 table(piracy$higher_piracy)
 
-probit <- glm(higher_piracy ~ available_digital ,data = piracy, 
-              family = binomial, link = "probit")
+probit <- glm(higher_piracy ~ amazon_video_purchase + redbox + amazon_dvd 
+              ,data = piracy,  family =binomial(link = "probit"))
+summary.glm(probit)
+
+mfxboot(modform = "higher_piracy ~ amazon_video_purchase + redbox + amazon_dvd ",
+        dist = "probit",
+        data = piracy)
+
