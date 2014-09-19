@@ -12,6 +12,10 @@
 require(gvlma) #Screw library(), require() rules
 require(MASS)
 
+
+# Source Pirate Functions -------------------------------------------------
+source("pirate_functions.R")
+
 # Grab data on pirates ----------------------------------------------------
 download.file("http://piracydata.org/csv", destfile = "p.csv")
 piracy <- read.csv("p.csv")
@@ -40,3 +44,19 @@ step$anova
 # Fully Stepwise Model:
 mod <- lm(pirate ~ vudu_rental + youtube_rental + amazon_video_purchase + 
              vudu_purchase, data = piracy)
+summary.lm(mod)
+gvlma(mod)
+
+# So, this model says that if movies are legally available on Vudu or Amazon that
+#     people are less likely to pirate them, however some of the diagnostic tests 
+#     from GVLMA (Global Validation of Linear Model Assumptions) indicate that
+#     the OLS assumptions are not satisfied. I'm going to try transforming the 
+#     outcome to binary and using a probit (probability) model with boostrap estimation
+#     of the marginal effects:
+
+piracy$higher_piracy <- 0
+piracy$higher_piracy[piracy$pirate >= .5] <- 1
+table(piracy$higher_piracy)
+
+probit <- glm(higher_piracy ~ available_digital ,data = piracy, 
+              family = binomial, link = "probit")
